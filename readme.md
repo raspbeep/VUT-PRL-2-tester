@@ -1,5 +1,7 @@
 ## TESTY NA 2. PRL PROJEKT - GAME OF LIFE
 
+Testy predpokladaju implementaciu na uzavrenom gride (ziadny wrap-around), teda mimo vstupneho pola je vzdy nula.
+
 #### ❗ Requirements
 * Python 3
 
