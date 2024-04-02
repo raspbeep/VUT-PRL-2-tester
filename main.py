@@ -102,7 +102,8 @@ def compare_results(idx, np, it):
     with open(f'./tests/case_{idx}/differences', 'a') as diff_file:
         reference_path = f'./tests/case_{idx}/i_{it}.txt'
         test_path = f'./tests/case_{idx}/case_{idx}_np_{np}_it_{it}.out'
-        result = subprocess.run(['diff', reference_path, test_path], stdout=diff_file)
+        command = f"bash -c 'diff <(sed \"s/[0-9]*: //\" {test_path}) {reference_path}'"
+        result = subprocess.run(command, shell=True, text=True, capture_output=True)
         if result.returncode != 0:
             diff_file.write(f'test case idx:{idx} np:{np} it:{it}\n')
             print(f'Test case idx:{idx} np:{np} it:{it} failed')
