@@ -11,6 +11,8 @@ MIN_PROC = 0    #minimum number of processes
 MAX_PROC = 10   #maximum number of processes
 MIN_IT = 0      #minimum number of iterations
 MAX_IT = 15     #maximum number of iterations
+SQUARES_ONLY = True
+WRAP_AROUND = False
 
 def read_field(filename):
     with open(filename, 'r') as f:
@@ -26,8 +28,17 @@ def count_neighbors(field, x, y):
             if dx == 0 and dy == 0:
                 continue
             nx, ny = x + dx, y + dy
-            if 0 <= nx < len(field) and 0 <= ny < len(field[0]):
+
+            if not WRAP_AROUND:
+                if 0 <= nx < len(field) and 0 <= ny < len(field[0]):
+                    neighbors += field[nx][ny]
+            else:
+                if nx > len(field[0]) - 1:
+                    nx = nx % len(field[0])
+                if ny > len(field) - 1:
+                    ny = ny % len(field)
                 neighbors += field[nx][ny]
+
     return neighbors
 
 def next_state(current_field):
@@ -74,6 +85,8 @@ def generate(n, max_length=MAX_LENGTH, max_count=MAX_COUNT):
         # only even numbers
         length = random.randint(1, max_length // 2) * 2
         count = random.randint(1, max_count // 2) * 2
+        if SQUARES_ONLY:
+            count = length
 
         for c in range(count):
             line = []
