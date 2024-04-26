@@ -14,6 +14,7 @@ MIN_IT = 0      #minimum number of iterations
 MAX_IT = 15     #maximum number of iterations
 SQUARES_ONLY = True
 WRAP_AROUND = True
+SORT_OUTPUT = False
 
 def read_field(filename):
     with open(filename, 'r') as f:
@@ -115,10 +116,17 @@ def launch_executable(executable_path, np, it, case_idx):
         print(' '.join(command))
         subprocess.run(command, stdout=out_file, stderr=err_file)
 
+    with open(f'./tests/case_{case_idx}/case_{case_idx}_np_{np}_it_{it}.out.sorted', 'w') as out_file:
+        command = ['sort', '-t', ':', '-g', '-k', '1,1', '-s', f'./tests/case_{case_idx}/case_{case_idx}_np_{np}_it_{it}.out']
+        subprocess.run(command, stdout=out_file)
+
 def compare_results(idx, np, it):
     with open(f'./tests/case_{idx}/differences', 'a') as diff_file:
         reference_path = f'./tests/case_{idx}/i_{it}.txt'
         test_path = f'./tests/case_{idx}/case_{idx}_np_{np}_it_{it}.out'
+        if SORT_OUTPUT:
+            test_path += '.sorted'
+
         command = f"bash -c 'diff <(sed \"s/[0-9]*: //\" {test_path}) {reference_path}'"
         
         result = subprocess.run(command, shell=True, text=True, capture_output=True)
