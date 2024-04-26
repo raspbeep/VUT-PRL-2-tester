@@ -11,7 +11,8 @@ Testy umoznuju testovat dva typy implementacie:
 1. Naklonujte repozitar.
 2. Skopirujte `life.cpp` a `test.sh` do ku `main.py` do jednej zlozky
 3. Nastavte `WRAP_AROUND` v `main.py` na `True`, ak vasa binarka implementuje wrap-around.
-4. Spustite `python3 main.py`
+4. Nastavte `SORT_OUTPUT` v `main.py` na `True`, ak vasa binarka generuje nesyncuje printy medzi procesmi
+5. Spustite `python3 main.py`
 
 #### Priebeh testu
 1. Vygenerovanie testcase-ov podla parametrov v `main.py`
@@ -34,7 +35,7 @@ Testy umoznuju testovat dva typy implementacie:
 #### ⚠️ Disclaimer
 * Testy su IBA orientacne.
 
-* Testy uplne ignoruju zaciatky riadkov obsahujuce `rank_id: `, kedze toto je velmi zavisle od zvolenej implementacie.
+* Testy uplne ignoruju zaciatky riadkov obsahujuce `rank_id: `, kedze toto je velmi zavisle od zvolenej implementacie. _Ak nemate zapnute `SORT_OUTPUT` - v tom pripade, sa riadky zoradia stabilnym sort algoritmom **len** podla ranku na zaciatku riadka._
 
 * Neviem ako budu testy fungovat na wine, ked tak niekto poslite PR s fixom.
 
