@@ -1,16 +1,17 @@
 ## TESTY NA 2. PRL PROJEKT - GAME OF LIFE
 
-Testy umoznuji testovat dva typy implementacie:
+Testy umoznuju testovat dva typy implementacie:
 1. Na uzavrenom gride (ziadny wrap-around), teda mimo vstupneho pola je vzdy nula.
-2. S wrap-around - levy soused prvni bunky je posledni bunka v tomto radku atp. 
+2. S wrap-around - lavy sused prvej bunky je posledna bunka v tomto radku atp. 
 
 #### ❗ Requirements
 * Python 3
 
 #### Pouzitie
-1. Naklonujte repozitar do zlozky s game of life binarkou alebo zmente `EXECUTABLE` v `main.py`
-2. Nastavte `WRAP_AROUND` v `main.py` na `True`, pokud vase binarka implementuje wrap-around.
-3. Spustite `python3 main.py`
+1. Naklonujte repozitar.
+2. Skopirujte `life.cpp` a `test.sh` do ku `main.py` do jednej zlozky
+3. Nastavte `WRAP_AROUND` v `main.py` na `True`, ak vasa binarka implementuje wrap-around.
+4. Spustite `python3 main.py`
 
 #### Priebeh testu
 1. Vygenerovanie testcase-ov podla parametrov v `main.py`

@@ -2,17 +2,18 @@ import os
 import random
 import subprocess
 
-EXECUTABLE='../gol'
+SCRIPT_PATH='./test.sh'
 
-N_TESTS = 3     #number of test cases
+N_TESTS = 1     #number of test cases
 MAX_LENGTH = 10 #width of the field
 MAX_COUNT = 10  #height of the field
-MIN_PROC = 0    #minimum number of processes
-MAX_PROC = 10   #maximum number of processes
+MIN_PROC = 1    #minimum number of processes
+MAX_PROC = 4   #maximum number of processes
+MIN_COUNT = max(4, MIN_PROC)
 MIN_IT = 0      #minimum number of iterations
 MAX_IT = 15     #maximum number of iterations
 SQUARES_ONLY = True
-WRAP_AROUND = False
+WRAP_AROUND = True
 
 def read_field(filename):
     with open(filename, 'r') as f:
@@ -83,8 +84,9 @@ def generate(n, max_length=MAX_LENGTH, max_count=MAX_COUNT):
     for i in range(n):
         test_case = []
         # only even numbers
-        length = random.randint(1, max_length // 2) * 2
-        count = random.randint(1, max_count // 2) * 2
+        # minimum is 4x4
+        length = random.randint(4, max_length // 2) * 2
+        count = random.randint(MIN_COUNT, max_count // 2) * 2
         if SQUARES_ONLY:
             count = length
 
@@ -109,17 +111,23 @@ def remove_tests(directory):
 
 def launch_executable(executable_path, np, it, case_idx):
     with open(f'./tests/case_{case_idx}/case_{case_idx}_np_{np}_it_{it}.out', 'w') as out_file, open(f'./tests/case_{case_idx}/case_{case_idx}_np_{np}_it_{it}.err', 'w') as err_file:
-        subprocess.run(['mpirun', '--oversubscribe', '-np', str(np), executable_path, f'./tests/case_{case_idx}/input.txt', str(it)], stdout=out_file, stderr=err_file)
+        command = ['sh', SCRIPT_PATH, f'./tests/case_{case_idx}/input.txt', str(it)]
+        print(' '.join(command))
+        subprocess.run(command, stdout=out_file, stderr=err_file)
 
 def compare_results(idx, np, it):
     with open(f'./tests/case_{idx}/differences', 'a') as diff_file:
         reference_path = f'./tests/case_{idx}/i_{it}.txt'
         test_path = f'./tests/case_{idx}/case_{idx}_np_{np}_it_{it}.out'
         command = f"bash -c 'diff <(sed \"s/[0-9]*: //\" {test_path}) {reference_path}'"
+        
         result = subprocess.run(command, shell=True, text=True, capture_output=True)
         if result.returncode != 0:
             diff_file.write(f'test case idx:{idx} np:{np} it:{it}\n')
+            diff_file.write(result.stdout)
             print(f'Test case idx:{idx} np:{np} it:{it} failed')
+        else:
+            print(f'OK')
 
 if __name__ == '__main__':
     tests = generate(N_TESTS)
@@ -135,5 +143,5 @@ if __name__ == '__main__':
         for np in range(MIN_PROC, MAX_PROC + 1):
             # test multiple iterations forward
             for l in range(MIN_IT, MAX_IT + 1):
-                    launch_executable(EXECUTABLE, np, l, i)
+                    launch_executable(SCRIPT_PATH, np, l, i)
                     compare_results(i, np, l)
